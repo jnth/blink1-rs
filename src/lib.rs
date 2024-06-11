@@ -9,10 +9,7 @@ const BLINK1_PRODUCT_ID: u16 = 0x01ed;
 
 const BLINK1_REPORT_ID: u8 = 1;
 const BLINK1_REPORT_SIZE: usize = 8;
-const BLINK1_REPORT2_ID: u8 = 2;
-const BLINK1_REPORT2_SIZE: usize = 60;
 const BLINK1_BUF_SIZE:usize = BLINK1_REPORT_SIZE + 1;
-const BLINK1_BUF2_SIZE: usize = BLINK1_REPORT2_SIZE + 1;
 
 pub struct Blink1Device {
     device: hidapi::HidDevice,
@@ -50,10 +47,10 @@ impl Blink1Device {
             Ok(api) => {
                 let mut vec: Vec<String> = Vec::new();
 
-                for device in api.devices() {
-                    if device.product_id == BLINK1_PRODUCT_ID && device.vendor_id == BLINK1_VENDOR_ID {
-                        if let Some(serial) = &device.serial_number {
-                            vec.push(serial.to_owned());
+                for device in api.device_list() {
+                    if device.product_id() == BLINK1_PRODUCT_ID && device.vendor_id() == BLINK1_VENDOR_ID {
+                        if let Some(serial) = &device.serial_number() {
+                            vec.push(serial.to_string());
                         }
                     }
                 }
