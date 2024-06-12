@@ -21,11 +21,11 @@ impl Blink1Device {
             Ok(api) => {
                 // Connect to device using its VID and PID
                 match api.open(BLINK1_VENDOR_ID, BLINK1_PRODUCT_ID) {
-                    Ok(device) => Ok(Blink1Device { device: device }),
-                    Err(e) => return Err(e),
+                    Ok(device) => Ok(Blink1Device { device }),
+                    Err(e) => Err(e),
                 }
             }
-            Err(e) => return Err(e),
+            Err(e) => Err(e),
         }
     }
 
@@ -35,10 +35,10 @@ impl Blink1Device {
                 // Connect to device using its VID and PID
                 match api.open_serial(BLINK1_VENDOR_ID, BLINK1_PRODUCT_ID, serial) {
                     Ok(device) => Ok(Blink1Device { device }),
-                    Err(e) => return Err(e),
+                    Err(e) => Err(e),
                 }
             },
-            Err(e) => return Err(e),
+            Err(e) => Err(e),
         }
     }
 
@@ -54,15 +54,14 @@ impl Blink1Device {
                         }
                     }
                 }
-
-                return Ok(vec);
+                Ok(vec)
             },
-            Err(e) => return Err(e),
+            Err(e) => Err(e),
         }
     }
 
     pub fn fade_off(&self, index: u8) -> HidResult<()> {
-        return self.fade_to_rgb(index, 0, 0, 0);
+        self.fade_to_rgb(index, 0, 0, 0)
     }
 
     pub fn fade_to_rgb(&self, index: u8, r: u8, g: u8, b: u8) -> HidResult<()> {
@@ -71,7 +70,7 @@ impl Blink1Device {
         let mut buf: [u8; BLINK1_BUF_SIZE] = [0; BLINK1_BUF_SIZE];
 
         buf[0] = BLINK1_REPORT_ID;
-        buf[1] = 'c' as u8;   // command code for 'fade to rgb'
+        buf[1] = b'c';   // command code for 'fade to rgb'
         buf[2] = r;
         buf[3] = g;
         buf[4] = b;
@@ -79,6 +78,6 @@ impl Blink1Device {
         buf[6] = dms % 0xff;
         buf[7] = index;
 
-        return self.device.send_feature_report(&buf);
+        self.device.send_feature_report(&buf)
     }
 }
