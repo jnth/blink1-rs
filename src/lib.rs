@@ -1,8 +1,8 @@
 use hidapi::HidApi;
-use hidapi::HidError;
+pub use hidapi::HidError;
 use hidapi::HidResult;
-use palette::rgb::Rgb;
-use palette::Srgb;
+pub use palette::rgb::Rgb;
+pub use palette::Srgb;
 use std::time::Duration;
 
 const BLINK1_VENDOR_ID: u16 = 0x27b8;
